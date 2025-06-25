@@ -37,7 +37,9 @@ jobs:
                 "taskd": "https://github.com/db-one/dbone-packages 18.06",
                 "gowebdav": "https://github.com/linkease/istore-packages",
                 "luci-app-gowebdav": "https://github.com/linkease/istore-packages",
-                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci"
+                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci",
+                "unishare": "https://github.com/linkease/nas-packages",
+                "webdav2": "https://github.com/linkease/nas-packages"
               }
             subdirs: |
               {
@@ -50,7 +52,9 @@ jobs:
                 "luci-app-oaf": "luci-app-oaf",
                 "gowebdav": "gowebdav",
                 "luci-app-gowebdav": "luci-app-gowebdav",
-                "luci-app-unishare": "luci/luci-app-unishare"
+                "luci-app-unishare": "luci/luci-app-unishare",
+                "unishare": "network/services/unishare",
+                "webdav2": "network/services/webdav2"
               }
           - branch: '24.10'
             repos: |
@@ -69,7 +73,9 @@ jobs:
                 "taskd": "https://github.com/db-one/dbone-packages 23.05",
                 "gowebdav": "https://github.com/linkease/istore-packages",
                 "luci-app-gowebdav": "https://github.com/linkease/istore-packages",
-                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci"
+                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci",
+                "unishare": "https://github.com/linkease/nas-packages",
+                "webdav2": "https://github.com/linkease/nas-packages"
               }
             subdirs: |
               {
@@ -82,7 +88,9 @@ jobs:
                 "taskd": "taskd",
                 "gowebdav": "gowebdav",
                 "luci-app-gowebdav": "luci-app-gowebdav",
-                "luci-app-unishare": "luci/luci-app-unishare"
+                "luci-app-unishare": "luci/luci-app-unishare",
+                "unishare": "network/services/unishare",
+                "webdav2": "network/services/webdav2"
               }
     env:
       TZ: Asia/Shanghai
