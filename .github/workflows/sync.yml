@@ -13,14 +13,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: 18.06
-          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
-      - name: 配置 Git 用户信息（使用默认机器人身份）
+      - name: 配置 Git 用户信息
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: 克隆上游仓库到临时目录
+      - name: 克隆上游仓库
         run: |
           mkdir sync
           cd sync
@@ -48,7 +49,7 @@ jobs:
             fi
           done
 
-      - name: 拷贝所有更新内容并清理临时目录
+      - name: 拷贝到主目录并清理
         run: |
           cp -a sync/* ./
           rm -rf sync
@@ -59,6 +60,7 @@ jobs:
             time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
             git add .
             git commit -m "更新时间：$time"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
             git push
           else
             echo "无变化，无需提交"
