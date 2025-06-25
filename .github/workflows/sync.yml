@@ -51,7 +51,8 @@ jobs:
             ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff"
             ["luci-app-store"]="https://github.com/db-one/dbone-packages 18.06"
             ["luci-app-openclash"]="https://github.com/vernesong/OpenClash"
-            ["luci-lib-taskd"]="https://github.com/db-one/dbone-packages 18.06"
+            ["luci-app-openclash"]="https://github.com/vernesong/OpenClash"
+            ["luci-app-shutdown"]="https://github.com/db-one/dbone-packages 18.06"
             ["luci-lib-xterm"]="https://github.com/db-one/dbone-packages 18.06"
             ["taskd"]="https://github.com/db-one/dbone-packages 18.06"
           )
@@ -64,6 +65,7 @@ jobs:
             ["luci-lib-taskd"]="luci-lib-taskd"
             ["luci-lib-xterm"]="luci-lib-xterm"
             ["taskd"]="taskd"
+            ["luci-app-shutdown"]="luci-app-shutdown"
           )
 
           declare -A last_commits
