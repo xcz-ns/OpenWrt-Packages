@@ -1,4 +1,5 @@
 -- Copyright 2018-2020 Lienol <lawlienol@gmail.com>
+-- Improve by xiaozhuai <xiaozhuai7@gmail.com>
 module("luci.controller.filebrowser", package.seeall)
 
 local http = require "luci.http"
@@ -7,19 +8,19 @@ local api = require "luci.model.cbi.filebrowser.api"
 function index()
     if not nixio.fs.access("/etc/config/filebrowser") then return end
 
-    entry({"admin", "nas"}, firstchild(), "NAS", 44).dependent = false
-    entry({"admin", "nas", "filebrowser"}, cbi("filebrowser/settings"),
+    entry({"admin", "services"}, firstchild(), "Services", 44).dependent = false
+    entry({"admin", "services", "filebrowser"}, cbi("filebrowser/settings"),
           _("File Browser"), 2).dependent = true
 
-    entry({"admin", "nas", "filebrowser", "check"}, call("action_check")).leaf =
+    entry({"admin", "services", "filebrowser", "check"}, call("action_check")).leaf =
         true
-    entry({"admin", "nas", "filebrowser", "download"}, call("action_download")).leaf =
+    entry({"admin", "services", "filebrowser", "download"}, call("action_download")).leaf =
         true
-    entry({"admin", "nas", "filebrowser", "status"}, call("act_status")).leaf =
+    entry({"admin", "services", "filebrowser", "status"}, call("act_status")).leaf =
         true
-    entry({"admin", "nas", "filebrowser", "get_log"}, call("get_log")).leaf =
+    entry({"admin", "services", "filebrowser", "get_log"}, call("get_log")).leaf =
         true
-    entry({"admin", "nas", "filebrowser", "clear_log"}, call("clear_log")).leaf =
+    entry({"admin", "services", "filebrowser", "clear_log"}, call("clear_log")).leaf =
         true
 end
 
@@ -30,9 +31,7 @@ end
 
 function act_status()
     local e = {}
-    e.status = luci.sys.call(
-                   "busybox ps -w | grep -v grep | grep 'filebrowser -a 0.0.0.0' >/dev/null") ==
-                   0
+    e.status = luci.sys.call("ps -w | grep -v grep | grep 'filebrowser -a' >/dev/null") == 0
     http_write_json(e)
 end
 
@@ -55,7 +54,6 @@ function action_download()
 end
 
 function get_log()
-    luci.http.write(luci.sys.exec(
-                        "[ -f '/var/log/filebrowser.log' ] && cat /var/log/filebrowser.log"))
+    luci.http.write(luci.sys.exec("[ -f '/var/log/filebrowser.log' ] && cat /var/log/filebrowser.log"))
 end
 function clear_log() luci.sys.call("echo '' > /var/log/filebrowser.log") end
