@@ -40,6 +40,7 @@ jobs:
           for name in "${!repos[@]}"; do
             echo "正在克隆 $name ..."
             git clone --depth=1 ${repos[$name]} "$name"
+            sleep 1
             rm -rf "$name/.git"
             if [[ "$name" == "luci-app-store" ]]; then
               mv "$name/luci-app-store" "$name-temp"
