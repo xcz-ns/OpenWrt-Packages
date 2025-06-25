@@ -26,7 +26,7 @@ jobs:
                 "luci-app-design-config": "https://github.com/0x676e67/luci-app-design-config",
                 "luci-theme-neobird": "https://github.com/thinktip/luci-theme-neobird",
                 "luci-app-lucky": "https://github.com/gdy666/luci-app-lucky",
-                "luci-app-filebrowser": "https://github.com/xiaozhuai/luci-app-filebrowser",
+                "luci-app-filebrowser": "https://github.com/wangqn/luci-app-filebrowser",
                 "luci-app-GoWebDav": "https://github.com/ToDesk/luci-app-GoWebDav",
                 "luci-app-poweroff": "https://github.com/esirplayground/luci-app-poweroff",
                 "luci-app-store": "https://github.com/db-one/dbone-packages 18.06",
