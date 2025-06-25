@@ -52,6 +52,7 @@ jobs:
             ["luci-app-openclash"]="https://github.com/vernesong/OpenClash"
             ["luci-lib-taskd"]="https://github.com/db-one/dbone-packages 18.06"
             ["luci-lib-xterm"]="https://github.com/db-one/dbone-packages 18.06"
+            ["taskd"]="https://github.com/db-one/dbone-packages 18.06"
           )
 
           declare -A subdirs=(
@@ -61,6 +62,7 @@ jobs:
             ["luci-app-filebrowser"]="luci-app-filebrowser"
             ["luci-lib-taskd"]="luci-lib-taskd"
             ["luci-lib-xterm"]="luci-lib-xterm"
+            ["taskd"]="taskd"
           )
 
           # 读已有同步记录到关联数组 last_commits
