@@ -65,10 +65,3 @@ jobs:
           else
             echo "无变化，无需提交"
           fi
-
-      - name: 清理历史 Workflow 运行记录
-        uses: Mattraks/delete-workflow-runs@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          retain_days: 0
-          keep_minimum_runs: 0
