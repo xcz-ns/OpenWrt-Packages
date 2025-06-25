@@ -4,6 +4,7 @@ luci-app-design-config 2413defc5ac5f615c248058e8a0205a58e0f371b
 luci-app-argon-config 9e2f3e5eba0a9ab64433414d63fe7eeb221a5d2e
 luci-app-poweroff 425b7a073cf9794a922af57c7008890e0111b79a
 taskd ae34db45d1ca2ff89e9b71e1291119659aa1e708
+luci-app-gowebdav 7cb7f9f95ab4e4a7842230c4597c68f688861422
 luci-theme-design 5cea733806ccaf17fd63790d171bb2b65f29f8bd
 luci-app-lucky 2b1fd7238361f9a06015684f546cbf1cb45f43c4
 luci-app-openclash 6608a4cda8dc90089651afced0c60553c1a6beab
