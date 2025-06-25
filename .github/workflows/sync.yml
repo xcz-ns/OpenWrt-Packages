@@ -160,7 +160,7 @@ jobs:
       - name: 检出 24.10 分支
         uses: actions/checkout@v4
         with:
-          ref: 24.10
+          ref: "24.10"
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: true
 
@@ -178,7 +178,7 @@ jobs:
             touch .sync-record-24.10
           fi
 
-      - name: 增量同步远程仓库（使用默认分支）
+      - name: 增量同步远程仓库
         run: |
           declare -A repos=(
             ["luci-app-argon-config"]="https://github.com/jerrykuku/luci-app-argon-config"
@@ -278,9 +278,9 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
             git add .
-            git commit -m "[24.10] 更新时间：$time"
+            git commit -m "["24.10"] 更新时间：$time"
             git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-            git push origin 24.10
+            git push origin "24.10"
           else
             echo "无变化，无需提交"
           fi
