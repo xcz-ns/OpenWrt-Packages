@@ -3,7 +3,7 @@ name: 每日同步上游仓库到 18.06
 on:
   schedule:
     - cron: '0 4 * * *'  # 每天中午12点（UTC+8）
-  workflow_dispatch:     # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -40,7 +40,6 @@ jobs:
           for name in "${!repos[@]}"; do
             echo "正在克隆 $name ..."
             git clone --depth=1 ${repos[$name]} "$name"
-            sleep 1
             rm -rf "$name/.git"
             if [[ "$name" == "luci-app-store" ]]; then
               mv "$name/luci-app-store" "$name-temp"
@@ -49,10 +48,13 @@ jobs:
             fi
           done
 
-      - name: 同步到主目录并提交变更
+      - name: 拷贝所有更新内容并清理临时目录
         run: |
-          rsync -a --delete sync/ ./
+          cp -a sync/* ./
+          rm -rf sync
 
+      - name: 提交并推送更改
+        run: |
           if [ -n "$(git status --porcelain)" ]; then
             time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
             git add .
