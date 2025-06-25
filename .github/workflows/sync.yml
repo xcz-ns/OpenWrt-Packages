@@ -1,6 +1,7 @@
 name: 自动同步上游
 run-name: 自动同步上游（${{ github.event_name }} - ${{ github.run_number }}）
 
+
 on:
   schedule:
     - cron: '0 4 * * *'  # UTC 4点，即北京时间12点
