@@ -44,7 +44,7 @@ jobs:
                 "luci-app-filebrowser": "luci-app-filebrowser",
                 "luci-lib-xterm": "luci-lib-xterm",
                 "taskd": "taskd",
-                "luci-app-shutdown": "luci-app-shutdown"
+                "luci-app-shutdown": "luci-app-shutdown", 
                 "luci-app-oaf": "luci-app-oaf"
               }
           - branch: '24.10'
