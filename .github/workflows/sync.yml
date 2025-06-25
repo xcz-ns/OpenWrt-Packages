@@ -108,6 +108,14 @@ jobs:
               mv "$name-temp-temp" "$name-temp"
             fi
 
+            # 处理特殊目录结构
+            if [[ "$name" == "luci-app-lucky" ]]; then
+              # luci-app-lucky 在库里是子目录，搬出来
+              mv "$name-temp/luci-app-lucky" "$name-temp-temp"
+              rm -rf "$name-temp"
+              mv "$name-temp-temp" "$name-temp"
+            fi
+
             # 删除 .git 目录避免提交冲突
             rm -rf "$name-temp/.git"
 
