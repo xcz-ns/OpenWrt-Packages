@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '0 4 * * *'  # UTC 4点，即北京时间12点
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/sync.yml'  # 当该文件发生变更时触发
 
 jobs:
   sync:
