@@ -42,15 +42,19 @@ jobs:
           for name in "${!repos[@]}"; do
             entry=(${repos[$name]})
             url=${entry[0]}
-            branch=${entry[1]:-main}
+            branch=${entry[1]:-}  # 默认空，表示不指定分支
 
-            echo "处理仓库 $name，URL: $url，分支: $branch"
+            echo "处理仓库 $name，URL: $url，分支: ${branch:-默认分支}"
 
             if [ -d "$name" ]; then
               cd "$name"
-              # 拉取远程最新commit
-              git fetch "$url" "$branch" --depth=1
-              remote_commit=$(git rev-parse FETCH_HEAD)
+              if [ -n "$branch" ]; then
+                git fetch "$url" "$branch" --depth=1
+                remote_commit=$(git rev-parse FETCH_HEAD)
+              else
+                git fetch "$url" --depth=1
+                remote_commit=$(git rev-parse FETCH_HEAD)
+              fi
               local_commit=$(git rev-parse HEAD)
 
               if [ "$remote_commit" = "$local_commit" ]; then
@@ -64,7 +68,11 @@ jobs:
               fi
             else
               echo "$name 本地不存在，克隆仓库"
-              git clone --depth=1 -b "$branch" "$url" "$name"
+              if [ -n "$branch" ]; then
+                git clone --depth=1 -b "$branch" "$url" "$name"
+              else
+                git clone --depth=1 "$url" "$name"
+              fi
             fi
 
             # 删除.git防止提交错误
