@@ -1,0 +1,158 @@
+name: 自动同步上游_24.10
+run-name: 自动同步上游（${{ github.event_name }} - ${{ github.run_number }}）
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # UTC 4点，即北京时间12点
+  workflow_dispatch:
+    branches:
+      - 24.10
+  push:
+    branches:
+      - 24.10
+    paths:
+      - '.github/workflows/sync.yml'  # 当该文件发生变更时触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: 检出当前仓库仓库
+        uses: actions/checkout@v4
+        with:
+          ref: 18.06
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+
+      - name: 设置 Git 用户名
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: 加载同步记录文件
+        id: read_record
+        run: |
+          if [ -f .sync-record ]; then
+            echo "读取已有同步记录"
+          else
+            echo "未找到同步记录文件，创建空文件"
+            touch .sync-record
+          fi
+
+      - name: 增量同步远程仓库
+        run: |
+          declare -A repos=(
+            ["luci-app-argon-config"]="https://github.com/jerrykuku/luci-app-argon-config 18.06"
+            ["luci-theme-argon"]="https://github.com/jerrykuku/luci-theme-argon 18.06"
+            ["luci-theme-design"]="https://github.com/0x676e67/luci-theme-design"
+            ["luci-app-design-config"]="https://github.com/0x676e67/luci-app-design-config"
+            ["luci-theme-neobird"]="https://github.com/thinktip/luci-theme-neobird"
+            ["luci-app-lucky"]="https://github.com/gdy666/luci-app-lucky"
+            ["luci-app-filebrowser"]="https://github.com/Lienol/openwrt-package"
+            ["luci-app-GoWebDav"]="https://github.com/ToDesk/luci-app-GoWebDav"
+            ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff"
+            ["luci-app-store"]="https://github.com/db-one/dbone-packages 18.06"
+            ["luci-app-openclash"]="https://github.com/vernesong/OpenClash"
+            ["luci-lib-taskd"]="https://github.com/db-one/dbone-packages 18.06"
+            ["luci-lib-xterm"]="https://github.com/db-one/dbone-packages 18.06"
+            ["taskd"]="https://github.com/db-one/dbone-packages 18.06"
+          )
+
+          declare -A subdirs=(
+            ["luci-app-lucky"]="luci-app-lucky"
+            ["luci-app-store"]="luci-app-store"
+            ["luci-app-openclash"]="luci-app-openclash"
+            ["luci-app-filebrowser"]="luci-app-filebrowser"
+            ["luci-lib-taskd"]="luci-lib-taskd"
+            ["luci-lib-xterm"]="luci-lib-xterm"
+            ["taskd"]="taskd"
+          )
+
+          # 读已有同步记录到关联数组 last_commits
+          declare -A last_commits
+          while read -r repo commit; do
+            last_commits["$repo"]=$commit
+          done < .sync-record
+
+          mkdir sync_temp
+          cd sync_temp
+
+          for name in "${!repos[@]}"; do
+            entry=(${repos[$name]})
+            url=${entry[0]}
+            branch=${entry[1]:-}
+
+            echo "处理仓库 $name，URL: $url，分支: ${branch:-默认分支}"
+
+            if [ -n "$branch" ]; then
+              remote_commit=$(git ls-remote "$url" refs/heads/"$branch" | awk '{print $1}')
+            else
+              remote_commit=$(git ls-remote "$url" HEAD | awk '{print $1}')
+            fi
+
+            if [ -z "$remote_commit" ]; then
+              echo "无法获取远程仓库最新提交，跳过 $name"
+              continue
+            fi
+
+            local_commit=${last_commits[$name]:-}
+
+            if [ "$remote_commit" = "$local_commit" ]; then
+              echo "$name 无变化，跳过更新"
+              continue
+            fi
+
+            echo "$name 有更新，开始拉取"
+
+            if [ -d "../$name" ]; then
+              rm -rf ../"$name"
+            fi
+
+            if [ -n "$branch" ]; then
+              git clone --depth=1 -b "$branch" "$url" "$name-temp"
+            else
+              git clone --depth=1 "$url" "$name-temp"
+            fi
+
+            # 特殊子目录提取处理
+            if [[ -n "${subdirs[$name]}" ]]; then
+              subdir="${subdirs[$name]}"
+              echo "$name 含子目录 $subdir，提取为根内容"
+              mv "$name-temp/$subdir" "$name-temp-temp"
+              rm -rf "$name-temp"
+              mv "$name-temp-temp" "$name-temp"
+            fi
+
+            rm -rf "$name-temp/.git"
+            mv "$name-temp" ../"$name"
+
+            last_commits["$name"]=$remote_commit
+          done
+
+          cd ..
+
+          > .sync-record
+          for repo in "${!last_commits[@]}"; do
+            echo "$repo ${last_commits[$repo]}" >> .sync-record
+          done
+
+      - name: 检测改动并提交
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
+            git add .
+            git commit -m "更新时间：$time"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+            git push
+          else
+            echo "无变化，无需提交"
+          fi
+
+      - name: 清理历史运行记录
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          retain_days: 0
+          keep_minimum_runs: 0
