@@ -137,7 +137,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
             git add .
-            git commit -m "[18.06] 更新时间：$time"
+            git commit -m "["18.06"] 更新时间：$time"
             git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
             git push origin 18.06
           else
