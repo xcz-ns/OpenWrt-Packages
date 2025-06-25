@@ -136,6 +136,9 @@ jobs:
           mkdir -p sync_temp
           cd sync_temp
           
+          # 初始化变化检测标志
+          changes_detected=false
+          
           # 遍历所有仓库
           for name in "${!repos[@]}"; do
             (
@@ -167,6 +170,9 @@ jobs:
                 echo "✅ $name 无变化，跳过更新"
                 exit 0
               fi
+              
+              # 标记有变化
+              changes_detected=true
               
               echo "🔄 $name 有更新（旧提交: ${local_commit:0:7} → 新提交: ${remote_commit:0:7}）"
               
@@ -229,11 +235,18 @@ jobs:
           
           cd ..
           
-          # 保存同步记录
-          > "$SYNC_RECORD"
-          for repo in "${!last_commits[@]}"; do
-            echo "$repo ${last_commits[$repo]}" >> "$SYNC_RECORD"
-          done
+          # 保存同步记录（只有当有变化时才更新）
+          if [ "$changes_detected" = true ]; then
+            echo "🔄 检测到变化，更新同步记录文件: $SYNC_RECORD"
+            > "$SYNC_RECORD"
+            for repo in "${!last_commits[@]}"; do
+              echo "$repo ${last_commits[$repo]}" >> "$SYNC_RECORD"
+            done
+            echo "更新后的同步记录内容:"
+            cat "$SYNC_RECORD"
+          else
+            echo "🟢 无变化，保持同步记录不变"
+          fi
 
       - name: 检测改动并提交
         run: |
