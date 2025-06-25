@@ -31,7 +31,7 @@ jobs:
                 "luci-app-poweroff": "https://github.com/esirplayground/luci-app-poweroff",
                 "luci-app-store": "https://github.com/db-one/dbone-packages 18.06",
                 "luci-app-openclash": "https://github.com/vernesong/OpenClash",
-                "luci-app-oaf": "https://github.com/vernesong/oaf",
+                "luci-app-oaf": "https://github.com/db-one/dbone-packages 18.06",
                 "luci-app-shutdown": "https://github.com/db-one/dbone-packages 18.06",
                 "luci-lib-xterm": "https://github.com/db-one/dbone-packages 18.06",
                 "taskd": "https://github.com/db-one/dbone-packages 18.06"
