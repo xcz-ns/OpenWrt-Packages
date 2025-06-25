@@ -34,7 +34,9 @@ jobs:
                 "luci-app-oaf": "https://github.com/db-one/dbone-packages 18.06",
                 "luci-app-shutdown": "https://github.com/db-one/dbone-packages 18.06",
                 "luci-lib-xterm": "https://github.com/db-one/dbone-packages 18.06",
-                "taskd": "https://github.com/db-one/dbone-packages 18.06"
+                "taskd": "https://github.com/db-one/dbone-packages 18.06",
+                "gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-gowebdav": "https://github.com/linkease/istore-packages"
               }
             subdirs: |
               {
@@ -44,7 +46,9 @@ jobs:
                 "luci-lib-xterm": "luci-lib-xterm",
                 "taskd": "taskd",
                 "luci-app-shutdown": "luci-app-shutdown", 
-                "luci-app-oaf": "luci-app-oaf"
+                "luci-app-oaf": "luci-app-oaf",
+                "gowebdav": "gowebdav",
+                "luci-app-gowebdav": "luci-app-gowebdav"
               }
           - branch: '24.10'
             repos: |
@@ -60,7 +64,9 @@ jobs:
                 "luci-app-openclash": "https://github.com/vernesong/OpenClash",
                 "luci-lib-taskd": "https://github.com/db-one/dbone-packages 23.05",
                 "luci-lib-xterm": "https://github.com/db-one/dbone-packages 23.05",
-                "taskd": "https://github.com/db-one/dbone-packages 23.05"
+                "taskd": "https://github.com/db-one/dbone-packages 23.05",
+                "gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-gowebdav": "https://github.com/linkease/istore-packages"
               }
             subdirs: |
               {
@@ -70,7 +76,9 @@ jobs:
                 "luci-app-filebrowser": "luci-app-filebrowser",
                 "luci-lib-taskd": "luci-lib-taskd",
                 "luci-lib-xterm": "luci-lib-xterm",
-                "taskd": "taskd"
+                "taskd": "taskd",
+                "gowebdav": "gowebdav",
+                "luci-app-gowebdav": "luci-app-gowebdav"
               }
     env:
       TZ: Asia/Shanghai
