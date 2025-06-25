@@ -1,4 +1,4 @@
-name: sync
+name: 每日同步上游仓库到 18.06
 
 on:
   schedule:
@@ -40,6 +40,7 @@ jobs:
           for name in "${!repos[@]}"; do
             echo "正在克隆 $name ..."
             git clone --depth=1 ${repos[$name]} "$name"
+            rm -rf "$name/.git"
             if [[ "$name" == "luci-app-store" ]]; then
               mv "$name/luci-app-store" "$name-temp"
               rm -rf "$name"
