@@ -46,11 +46,13 @@ jobs:
             ["luci-app-GoWebDav"]="https://github.com/ToDesk/luci-app-GoWebDav"
             ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff"
             ["luci-app-store"]="https://github.com/db-one/dbone-packages 18.06"
+            ["luci-app-openclash"]="https://github.com/vernesong/OpenClash"
           )
 
           declare -A subdirs=(
             ["luci-app-lucky"]="luci-app-lucky"
             ["luci-app-store"]="luci-app-store"
+            ["luci-app-openclash"]="luci-app-openclash"
           )
 
           # 读已有同步记录到关联数组 last_commits
