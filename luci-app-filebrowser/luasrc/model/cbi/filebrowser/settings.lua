@@ -22,14 +22,6 @@ o = s:option(Value, "database", translate("Database path"))
 o.default = "/etc/filebrowser.db"
 o.rmempty = false
 
-o = s:option(Value, "username", translate("Initial username"))
-o.default = "admin"
-o.rmempty = false
-
-o = s:option(Value, "password", translate("Initial password"))
-o.default = "admin"
-o.rmempty = false
-
 o = s:option(Value, "ssl_cert", translate("SSL cert"))
 o.default = ""
 
