@@ -36,7 +36,8 @@ jobs:
                 "luci-lib-xterm": "https://github.com/db-one/dbone-packages 18.06",
                 "taskd": "https://github.com/db-one/dbone-packages 18.06",
                 "gowebdav": "https://github.com/linkease/istore-packages",
-                "luci-app-gowebdav": "https://github.com/linkease/istore-packages"
+                "luci-app-gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci"
               }
             subdirs: |
               {
@@ -48,7 +49,8 @@ jobs:
                 "luci-app-shutdown": "luci-app-shutdown", 
                 "luci-app-oaf": "luci-app-oaf",
                 "gowebdav": "gowebdav",
-                "luci-app-gowebdav": "luci-app-gowebdav"
+                "luci-app-gowebdav": "luci-app-gowebdav",
+                "luci-app-unishare": "luci/luci-app-unishare"
               }
           - branch: '24.10'
             repos: |
@@ -66,7 +68,8 @@ jobs:
                 "luci-lib-xterm": "https://github.com/db-one/dbone-packages 23.05",
                 "taskd": "https://github.com/db-one/dbone-packages 23.05",
                 "gowebdav": "https://github.com/linkease/istore-packages",
-                "luci-app-gowebdav": "https://github.com/linkease/istore-packages"
+                "luci-app-gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci"
               }
             subdirs: |
               {
@@ -78,7 +81,8 @@ jobs:
                 "luci-lib-xterm": "luci-lib-xterm",
                 "taskd": "taskd",
                 "gowebdav": "gowebdav",
-                "luci-app-gowebdav": "luci-app-gowebdav"
+                "luci-app-gowebdav": "luci-app-gowebdav",
+                "luci-app-unishare": "luci/luci-app-unishare"
               }
     env:
       TZ: Asia/Shanghai
