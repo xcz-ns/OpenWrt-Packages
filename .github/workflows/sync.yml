@@ -183,18 +183,16 @@ jobs:
           declare -A repos=(
             ["luci-app-argon-config"]="https://github.com/jerrykuku/luci-app-argon-config"
             ["luci-theme-argon"]="https://github.com/jerrykuku/luci-theme-argon"
-            ["luci-theme-design"]="https://github.com/0x676e67/luci-theme-design"
-            ["luci-app-design-config"]="https://github.com/0x676e67/luci-app-design-config"
             ["luci-theme-neobird"]="https://github.com/thinktip/luci-theme-neobird"
             ["luci-app-lucky"]="https://github.com/gdy666/luci-app-lucky"
             ["luci-app-filebrowser"]="https://github.com/Lienol/openwrt-package"
             ["luci-app-GoWebDav"]="https://github.com/ToDesk/luci-app-GoWebDav"
             ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff"
-            ["luci-app-store"]="https://github.com/db-one/dbone-packages"
+            ["luci-app-store"]="https://github.com/db-one/dbone-packages 23.05"
             ["luci-app-openclash"]="https://github.com/vernesong/OpenClash"
-            ["luci-lib-taskd"]="https://github.com/db-one/dbone-packages"
-            ["luci-lib-xterm"]="https://github.com/db-one/dbone-packages"
-            ["taskd"]="https://github.com/db-one/dbone-packages"
+            ["luci-lib-taskd"]="https://github.com/db-one/dbone-packages 23.05"
+            ["luci-lib-xterm"]="https://github.com/db-one/dbone-packages 23.05"
+            ["taskd"]="https://github.com/db-one/dbone-packages 23.05"
           )
 
           declare -A subdirs=(
