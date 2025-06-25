@@ -29,13 +29,13 @@ jobs:
           declare -A repos=(
             ["luci-app-argon-config"]="https://github.com/jerrykuku/luci-app-argon-config 18.06"
             ["luci-theme-argon"]="https://github.com/jerrykuku/luci-theme-argon 18.06"
-            ["luci-theme-design"]="https://github.com/0x676e67/luci-theme-design main"
-            ["luci-app-design-config"]="https://github.com/0x676e67/luci-app-design-config main"
-            ["luci-theme-neobird"]="https://github.com/thinktip/luci-theme-neobird.git main"
-            ["luci-app-lucky"]="https://github.com/gdy666/luci-app-lucky.git main"
+            ["luci-theme-design"]="https://github.com/0x676e67/luci-theme-design"
+            ["luci-app-design-config"]="https://github.com/0x676e67/luci-app-design-config"
+            ["luci-theme-neobird"]="https://github.com/thinktip/luci-theme-neobird.git"
+            ["luci-app-lucky"]="https://github.com/gdy666/luci-app-lucky.git"
             ["luci-app-filebrowser"]="https://github.com/xiaozhuai/luci-app-filebrowser 18.06"
-            ["luci-app-GoWebDav"]="https://github.com/ToDesk/luci-app-GoWebDav.git main"
-            ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff main"
+            ["luci-app-GoWebDav"]="https://github.com/ToDesk/luci-app-GoWebDav.git"
+            ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff"
             ["luci-app-store"]="https://github.com/db-one/dbone-packages 18.06"
           )
 
