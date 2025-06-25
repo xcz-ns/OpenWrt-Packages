@@ -47,6 +47,8 @@ jobs:
             ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff"
             ["luci-app-store"]="https://github.com/db-one/dbone-packages 18.06"
             ["luci-app-openclash"]="https://github.com/vernesong/OpenClash"
+            ["luci-lib-taskd"]="https://github.com/db-one/dbone-packages 18.06"
+            ["luci-lib-xterm"]="https://github.com/db-one/dbone-packages 18.06"
           )
 
           declare -A subdirs=(
@@ -54,6 +56,8 @@ jobs:
             ["luci-app-store"]="luci-app-store"
             ["luci-app-openclash"]="luci-app-openclash"
             ["luci-app-filebrowser"]="luci-app-filebrowser"
+            ["luci-lib-taskd"]="luci-lib-taskd"
+            ["luci-lib-xterm"]="luci-lib-xterm"
           )
 
           # 读已有同步记录到关联数组 last_commits
