@@ -2,7 +2,7 @@ name: 每日同步上游仓库到 18.06
 
 on:
   schedule:
-    - cron: '0 4 * * *'  # 每天中午12点（UTC+8）
+    - cron: '0 4 * * *'  # UTC 4点，即北京时间12点
   workflow_dispatch:
 
 jobs:
@@ -21,27 +21,56 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: 克隆上游仓库
+      - name: 同步上游仓库（增量更新）
         run: |
           mkdir sync
           cd sync
+
           declare -A repos=(
-            ["luci-app-argon-config"]="https://github.com/jerrykuku/luci-app-argon-config -b 18.06"
-            ["luci-theme-argon"]="https://github.com/jerrykuku/luci-theme-argon -b 18.06"
-            ["luci-theme-design"]="https://github.com/0x676e67/luci-theme-design"
-            ["luci-app-design-config"]="https://github.com/0x676e67/luci-app-design-config"
-            ["luci-theme-neobird"]="https://github.com/thinktip/luci-theme-neobird.git"
-            ["luci-app-lucky"]="https://github.com/gdy666/luci-app-lucky.git"
-            ["luci-app-filebrowser"]="https://github.com/xiaozhuai/luci-app-filebrowser -b 18.06"
-            ["luci-app-GoWebDav"]="https://github.com/ToDesk/luci-app-GoWebDav.git"
-            ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff"
-            ["luci-app-store"]="https://github.com/db-one/dbone-packages -b 18.06"
+            ["luci-app-argon-config"]="https://github.com/jerrykuku/luci-app-argon-config 18.06"
+            ["luci-theme-argon"]="https://github.com/jerrykuku/luci-theme-argon 18.06"
+            ["luci-theme-design"]="https://github.com/0x676e67/luci-theme-design main"
+            ["luci-app-design-config"]="https://github.com/0x676e67/luci-app-design-config main"
+            ["luci-theme-neobird"]="https://github.com/thinktip/luci-theme-neobird.git main"
+            ["luci-app-lucky"]="https://github.com/gdy666/luci-app-lucky.git main"
+            ["luci-app-filebrowser"]="https://github.com/xiaozhuai/luci-app-filebrowser 18.06"
+            ["luci-app-GoWebDav"]="https://github.com/ToDesk/luci-app-GoWebDav.git main"
+            ["luci-app-poweroff"]="https://github.com/esirplayground/luci-app-poweroff main"
+            ["luci-app-store"]="https://github.com/db-one/dbone-packages 18.06"
           )
 
           for name in "${!repos[@]}"; do
-            echo "正在克隆 $name ..."
-            git clone --depth=1 ${repos[$name]} "$name"
+            entry=(${repos[$name]})
+            url=${entry[0]}
+            branch=${entry[1]:-main}
+
+            echo "处理仓库 $name，URL: $url，分支: $branch"
+
+            if [ -d "$name" ]; then
+              cd "$name"
+              # 拉取远程最新commit
+              git fetch "$url" "$branch" --depth=1
+              remote_commit=$(git rev-parse FETCH_HEAD)
+              local_commit=$(git rev-parse HEAD)
+
+              if [ "$remote_commit" = "$local_commit" ]; then
+                echo "$name 无变化，跳过更新"
+                cd ..
+                continue
+              else
+                echo "$name 有更新，开始同步"
+                git reset --hard "$remote_commit"
+                cd ..
+              fi
+            else
+              echo "$name 本地不存在，克隆仓库"
+              git clone --depth=1 -b "$branch" "$url" "$name"
+            fi
+
+            # 删除.git防止提交错误
             rm -rf "$name/.git"
+
+            # 处理特殊目录结构
             if [[ "$name" == "luci-app-store" ]]; then
               mv "$name/luci-app-store" "$name-temp"
               rm -rf "$name"
@@ -49,12 +78,12 @@ jobs:
             fi
           done
 
-      - name: 拷贝到主目录并清理
-        run: |
-          cp -a sync/* ./
+          # 拷贝所有同步内容到主目录
+          cp -a ./sync/* ../
+          cd ..
           rm -rf sync
 
-      - name: 提交并推送更改
+      - name: 检查变更并提交推送
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
@@ -65,3 +94,10 @@ jobs:
           else
             echo "无变化，无需提交"
           fi
+
+      - name: 清理历史 Workflow 运行记录
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          retain_days: 0
+          keep_minimum_runs: 0
