@@ -21,11 +21,18 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
+      - name: 读取上游同步记录
+        id: read_record
+        run: |
+          if [ -f .sync-record ]; then
+            echo "读取已有同步记录"
+          else
+            echo "未找到同步记录文件，创建空文件"
+            touch .sync-record
+          fi
+
       - name: 同步上游仓库（增量更新）
         run: |
-          mkdir sync
-          cd sync
-
           declare -A repos=(
             ["luci-app-argon-config"]="https://github.com/jerrykuku/luci-app-argon-config 18.06"
             ["luci-theme-argon"]="https://github.com/jerrykuku/luci-theme-argon 18.06"
@@ -39,57 +46,83 @@ jobs:
             ["luci-app-store"]="https://github.com/db-one/dbone-packages 18.06"
           )
 
+          # 读已有同步记录到关联数组 last_commits
+          declare -A last_commits
+          while read -r repo commit; do
+            last_commits["$repo"]=$commit
+          done < .sync-record
+
+          # 临时目录，避免直接影响当前目录
+          mkdir sync_temp
+          cd sync_temp
+
           for name in "${!repos[@]}"; do
             entry=(${repos[$name]})
             url=${entry[0]}
-            branch=${entry[1]:-}  # 默认空，表示不指定分支
+            branch=${entry[1]:-}
 
             echo "处理仓库 $name，URL: $url，分支: ${branch:-默认分支}"
 
-            if [ -d "$name" ]; then
-              cd "$name"
-              if [ -n "$branch" ]; then
-                git fetch "$url" "$branch" --depth=1
-                remote_commit=$(git rev-parse FETCH_HEAD)
-              else
-                git fetch "$url" --depth=1
-                remote_commit=$(git rev-parse FETCH_HEAD)
-              fi
-              local_commit=$(git rev-parse HEAD)
-
-              if [ "$remote_commit" = "$local_commit" ]; then
-                echo "$name 无变化，跳过更新"
-                cd ..
-                continue
-              else
-                echo "$name 有更新，开始同步"
-                git reset --hard "$remote_commit"
-                cd ..
-              fi
+            # 获取远程最新提交
+            if [ -n "$branch" ]; then
+              remote_commit=$(git ls-remote "$url" refs/heads/"$branch" | awk '{print $1}')
             else
-              echo "$name 本地不存在，克隆仓库"
-              if [ -n "$branch" ]; then
-                git clone --depth=1 -b "$branch" "$url" "$name"
-              else
-                git clone --depth=1 "$url" "$name"
-              fi
+              remote_commit=$(git ls-remote "$url" HEAD | awk '{print $1}')
             fi
 
-            # 删除.git防止提交错误
-            rm -rf "$name/.git"
+            if [ -z "$remote_commit" ]; then
+              echo "无法获取远程仓库最新提交，跳过 $name"
+              continue
+            fi
+
+            local_commit=${last_commits[$name]:-}
+
+            if [ "$remote_commit" = "$local_commit" ]; then
+              echo "$name 无变化，跳过更新"
+              continue
+            fi
+
+            echo "$name 有更新，开始拉取"
+
+            # 先删除旧目录（根目录下对应文件和目录）
+            # 注意这里要小心不要误删.git 或 .sync-record 等关键文件
+            # 你可以根据仓库结构调整排除规则，下面示范简单删除对应目录或文件
+            if [ -d "../$name" ]; then
+              rm -rf ../"$name"
+            fi
+
+            # 克隆代码到当前目录临时目录（单独一个目录）
+            if [ -n "$branch" ]; then
+              git clone --depth=1 -b "$branch" "$url" "$name-temp"
+            else
+              git clone --depth=1 "$url" "$name-temp"
+            fi
 
             # 处理特殊目录结构
             if [[ "$name" == "luci-app-store" ]]; then
-              mv "$name/luci-app-store" "$name-temp"
-              rm -rf "$name"
-              mv "$name-temp" "$name"
+              # luci-app-store 在库里是子目录，搬出来
+              mv "$name-temp/luci-app-store" "$name-temp-temp"
+              rm -rf "$name-temp"
+              mv "$name-temp-temp" "$name-temp"
             fi
+
+            # 删除 .git 目录避免提交冲突
+            rm -rf "$name-temp/.git"
+
+            # 移动内容到根目录
+            mv "$name-temp" ../"$name"
+
+            # 记录新的提交哈希
+            last_commits["$name"]=$remote_commit
           done
 
-          # 拷贝所有同步内容到主目录
-          cp -a ./sync/* ../
           cd ..
-          rm -rf sync
+
+          # 更新 .sync-record 文件
+          > .sync-record
+          for repo in "${!last_commits[@]}"; do
+            echo "$repo ${last_commits[$repo]}" >> .sync-record
+          done
 
       - name: 检查变更并提交推送
         run: |
