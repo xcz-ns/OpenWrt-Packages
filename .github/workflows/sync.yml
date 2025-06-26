@@ -12,7 +12,6 @@ on:
 jobs:
   sync:
     name: 同步到 ${{ matrix.branch }}
-    shell: bash
     runs-on: ubuntu-latest
     strategy:
       matrix:
