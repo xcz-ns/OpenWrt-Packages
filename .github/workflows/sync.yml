@@ -50,7 +50,7 @@ jobs:
                 "luci-app-oaf": "luci-app-oaf",
                 "gowebdav": "gowebdav",
                 "luci-app-gowebdav": "luci-app-gowebdav",
-                "luci-app-unishare": "luci/luci-app-unishare",
+                "luci-app-unishare": "luci-app-unishare",
                 "unishare": "network/services/unishare",
                 "webdav2": "network/services/webdav2"
               }
