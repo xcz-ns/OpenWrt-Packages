@@ -12,6 +12,7 @@ on:
 jobs:
   sync:
     name: 同步到 ${{ matrix.branch }}
+    shell: bash
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -96,6 +97,7 @@ jobs:
       TZ: Asia/Shanghai
     steps:
       - name: 检出 ${{ matrix.branch }} 分支
+        shell: bash
         uses: actions/checkout@v4
         with:
           ref: ${{ matrix.branch }}
@@ -103,11 +105,13 @@ jobs:
           persist-credentials: true
 
       - name: 设置 Git 用户名
+        shell: bash
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
       - name: 检查并安装 jq
+        shell: bash
         run: |
           if ! command -v jq &> /dev/null; then
             echo "jq 未安装，正在安装..."
@@ -118,6 +122,7 @@ jobs:
           fi
 
       - name: 加载同步记录
+        shell: bash
         run: |
           SYNC_RECORD=".sync-record-${{ matrix.branch }}"
           if [ -f "$SYNC_RECORD" ]; then
@@ -128,6 +133,7 @@ jobs:
           fi
 
       - name: 增量同步仓库
+        shell: bash
         run: |
           # 从矩阵配置中获取JSON数据
           REPOS_JSON='${{ matrix.repos }}'
@@ -268,6 +274,7 @@ jobs:
           cat "$SYNC_RECORD"
 
       - name: 检测改动并提交
+        shell: bash
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             time=$(date '+%Y-%m-%d %H:%M:%S')
