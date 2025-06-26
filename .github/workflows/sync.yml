@@ -118,7 +118,6 @@ jobs:
           fi
 
       - name: 加载同步记录
-        shell: bash
         run: |
           SYNC_RECORD=".sync-record-${{ matrix.branch }}"
           if [ -f "$SYNC_RECORD" ]; then
@@ -129,7 +128,6 @@ jobs:
           fi
 
       - name: 增量同步仓库
-        shell: bash
         run: |
           # 从矩阵配置中获取JSON数据
           REPOS_JSON='${{ matrix.repos }}'
@@ -150,20 +148,10 @@ jobs:
 
           # 读取上次同步记录
           declare -A last_commits
-          force_pull_all=false
-
           if [ -f "$SYNC_RECORD" ]; then
-            if [ ! -s "$SYNC_RECORD" ]; then
-              echo "⚠️ 同步记录文件为空，将强制拉取所有仓库"
-              force_pull_all=true
-            else
-              while read -r repo commit; do
-                last_commits["$repo"]=$commit
-              done < "$SYNC_RECORD"
-            fi
-          else
-            echo "⚠️ 同步记录文件不存在，将强制拉取所有仓库"
-            force_pull_all=true
+            while read -r repo commit; do
+              last_commits["$repo"]=$commit
+            done < "$SYNC_RECORD"
           fi
 
           # 创建临时目录
@@ -200,12 +188,21 @@ jobs:
               fi
 
               local_commit="${last_commits[$name]:-}"
-              if [ "$remote_commit" == "$local_commit" ] && [ "$force_pull_all" != true ]; then
-                echo "✅ $name 无变化，跳过更新"
-              else
-                echo "🔄 $name 有更新（旧: ${local_commit:0:7:-无-} → 新: ${remote_commit:0:7}）"
+              # 关键优化：当同步记录文件为空时强制拉取
+              if [ -z "$local_commit" ] || [ ! -s "../$SYNC_RECORD" ]; then
+                echo "🔄 首次同步或记录为空，强制更新 $name"
                 changes_detected=true
+                should_update=true
+              elif [ "$remote_commit" == "$local_commit" ]; then
+                echo "✅ $name 无变化，跳过更新"
+                should_update=false
+              else
+                echo "🔄 $name 有更新（旧: ${local_commit:0:7} → 新: ${remote_commit:0:7}）"
+                changes_detected=true
+                should_update=true
+              fi
 
+              if $should_update; then
                 # 清理旧目录
                 if [ -d "../$name" ]; then
                   echo "   清理旧目录: ../$name"
@@ -234,6 +231,10 @@ jobs:
 
                 if [ $retry_count -eq $max_retries ]; then
                   echo "❌ 克隆 $name 失败，跳过"
+                  # 保留原有记录（如果存在）
+                  if [ -n "$local_commit" ]; then
+                    echo "$name $local_commit" >> "../$TEMP_RECORD"
+                  fi
                   exit 0
                 fi
 
@@ -257,23 +258,22 @@ jobs:
                 echo "✅ $name 更新完成"
               fi
 
-              # ✅ 无论是否更新都记录最新 commit
+              # 记录最新 commit（无论是否更新）
               echo "$name $remote_commit" >> "../$TEMP_RECORD"
             ) || echo "⚠️ $name 处理失败，继续下一个仓库"
           done
 
           cd ..
 
-          # ✅ 保存新同步记录
+          # 保存新同步记录
           mv "$TEMP_RECORD" "$SYNC_RECORD"
           echo "📦 已更新同步记录内容:"
           cat "$SYNC_RECORD"
 
       - name: 检测改动并提交
-        shell: bash
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            time=$(date '+%Y-%m-%d %H:%M:%S')
+            time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
             git add .
             git commit -m "🎈同步时间 $time🚀"
             git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
