@@ -117,157 +117,96 @@ jobs:
             echo "jq 已安装"
           fi
 
-      - name: 加载同步记录
-        run: |
-          SYNC_RECORD=".sync-record-${{ matrix.branch }}"
-          if [ -f "$SYNC_RECORD" ]; then
-            echo "读取已有同步记录: $SYNC_RECORD"
-          else
-            echo "未找到同步记录文件，创建新文件: $SYNC_RECORD"
-            touch "$SYNC_RECORD"
-          fi
-
       - name: 增量同步仓库
         run: |
-          # 从矩阵配置中获取JSON数据
           REPOS_JSON='${{ matrix.repos }}'
           SUBDIRS_JSON='${{ matrix.subdirs }}'
           SYNC_RECORD=".sync-record-${{ matrix.branch }}"
           TEMP_RECORD="${SYNC_RECORD}.tmp"
 
-          # 解析JSON到关联数组
-          declare -A repos
-          while IFS="=" read -r key value; do
-            repos["$key"]="$value"
-          done < <(jq -r 'to_entries | .[] | "\(.key)=\(.value)"' <<< "$REPOS_JSON")
+          declare -A repos subdirs last_commits
+          force_pull_all=false
 
-          declare -A subdirs
-          while IFS="=" read -r key value; do
-            subdirs["$key"]="$value"
-          done < <(jq -r 'to_entries | .[] | "\(.key)=\(.value)"' <<< "$SUBDIRS_JSON")
+          while IFS="=" read -r key value; do repos["$key"]="$value"; done < <(jq -r 'to_entries | .[] | "\(.key)=\(.value)"' <<< "$REPOS_JSON")
+          while IFS="=" read -r key value; do subdirs["$key"]="$value"; done < <(jq -r 'to_entries | .[] | "\(.key)=\(.value)"' <<< "$SUBDIRS_JSON")
 
-          # 读取上次同步记录
-          declare -A last_commits
           if [ -f "$SYNC_RECORD" ]; then
-            while read -r repo commit; do
-              last_commits["$repo"]=$commit
-            done < "$SYNC_RECORD"
+            if [ ! -s "$SYNC_RECORD" ]; then
+              echo "⚠️ 同步记录为空，强制拉取所有仓库"
+              force_pull_all=true
+            else
+              while read -r repo commit; do
+                last_commits["$repo"]=$commit
+              done < "$SYNC_RECORD"
+            fi
+          else
+            echo "⚠️ 同步记录不存在，强制拉取所有仓库"
+            force_pull_all=true
           fi
 
-          # 创建临时目录
-          mkdir -p sync_temp
-          cd sync_temp
-
-          # 初始化变化检测标志
+          mkdir -p sync_temp && cd sync_temp
           changes_detected=false
-
-          # 清空临时同步记录文件
           > "../$TEMP_RECORD"
 
-          # 遍历所有仓库
           for name in "${!repos[@]}"; do
             (
-              echo "🔁 开始处理仓库: $name"
-
+              echo "🔁 正在处理仓库: $name"
               entry="${repos[$name]}"
               url=$(echo "$entry" | awk '{print $1}')
               branch=$(echo "$entry" | awk '{print $2}')
-              echo "   URL: $url"
-              echo "   分支: ${branch:-默认分支}"
-
-              # 获取远程最新提交
-              if [ -n "$branch" ]; then
-                remote_commit=$(git ls-remote "$url" "refs/heads/$branch" | awk '{print $1}')
-              else
-                remote_commit=$(git ls-remote "$url" HEAD | awk '{print $1}')
-              fi
-
-              if [ -z "$remote_commit" ]; then
-                echo "❌ 无法获取远程仓库最新提交，跳过 $name"
-                exit 0
-              fi
+              remote_commit=$(git ls-remote "$url" "refs/heads/${branch:-HEAD}" | awk '{print $1}')
+              [ -z "$remote_commit" ] && echo "❌ 获取远程提交失败: $name" && exit 0
 
               local_commit="${last_commits[$name]:-}"
-              if [ "$remote_commit" == "$local_commit" ]; then
-                echo "✅ $name 无变化，跳过更新"
+              if [ "$remote_commit" == "$local_commit" ] && [ "$force_pull_all" != true ]; then
+                echo "✅ $name 无变化，跳过"
               else
-                echo "🔄 $name 有更新（旧: ${local_commit:0:7} → 新: ${remote_commit:0:7}）"
+                echo "🔄 $name 有更新（${local_commit:0:7:-无-} → ${remote_commit:0:7}）"
                 changes_detected=true
-
-                # 清理旧目录
-                if [ -d "../$name" ]; then
-                  echo "   清理旧目录: ../$name"
-                  rm -rf "../$name"
-                fi
-
-                # 克隆仓库（带重试）
-                clone_dir="$name-temp"
-                max_retries=3
-                retry_count=0
-                while [ $retry_count -lt $max_retries ]; do
+                rm -rf "../$name"
+                clone_dir="${name}-temp"
+                for i in {1..3}; do
                   if [ -n "$branch" ]; then
-                    git clone -q --depth=1 -b "$branch" "$url" "$clone_dir"
+                    git clone -q --depth=1 -b "$branch" "$url" "$clone_dir" && break
                   else
-                    git clone -q --depth=1 "$url" "$clone_dir"
+                    git clone -q --depth=1 "$url" "$clone_dir" && break
                   fi
-
-                  if [ $? -eq 0 ]; then
-                    break
-                  fi
-                  retry_count=$((retry_count+1))
-                  echo "⚠️ 克隆失败，重试 $retry_count/$max_retries..."
-                  sleep 2
-                  rm -rf "$clone_dir"
+                  sleep 2 && rm -rf "$clone_dir"
                 done
 
-                if [ $retry_count -eq $max_retries ]; then
-                  echo "❌ 克隆 $name 失败，跳过"
-                  exit 0
+                [ ! -d "$clone_dir" ] && echo "❌ 克隆失败: $name" && exit 0
+
+                if [[ -n "${subdirs[$name]}" ]] && [ -d "$clone_dir/${subdirs[$name]}" ]; then
+                  mv "$clone_dir/${subdirs[$name]}" "${clone_dir}-content"
+                  rm -rf "$clone_dir"
+                  mv "${clone_dir}-content" "$clone_dir"
                 fi
 
-                # 提取子目录
-                if [[ -n "${subdirs[$name]}" ]]; then
-                  subdir="${subdirs[$name]}"
-                  echo "   提取子目录: $subdir"
-                  if [ -d "$clone_dir/$subdir" ]; then
-                    mv "$clone_dir/$subdir" "${clone_dir}-content"
-                    rm -rf "$clone_dir"
-                    mv "${clone_dir}-content" "$clone_dir"
-                  else
-                    echo "⚠️ 子目录 $subdir 不存在，跳过提取"
-                  fi
-                fi
-
-                # 移除 .git 并移动到目标
                 rm -rf "$clone_dir/.git"
                 mv "$clone_dir" "../$name"
-
                 echo "✅ $name 更新完成"
               fi
 
-              # ✅ 无论是否更新都记录最新 commit
               echo "$name $remote_commit" >> "../$TEMP_RECORD"
-            ) || echo "⚠️ $name 处理失败，继续下一个仓库"
+            ) || echo "⚠️ $name 处理失败"
           done
 
           cd ..
-
-          # ✅ 保存新同步记录
           mv "$TEMP_RECORD" "$SYNC_RECORD"
-          echo "📦 已更新同步记录内容:"
+          echo "📦 同步记录:"
           cat "$SYNC_RECORD"
 
       - name: 检测改动并提交
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
+            time=$(date '+%Y-%m-%d %H-%M-%S')
             git add .
             git commit -m "🎈同步时间 $time🚀"
             git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
             git push origin ${{ matrix.branch }}
-            echo "✅ 已提交并推送更改"
+            echo "✅ 已提交推送"
           else
-            echo "🟢 无变化，无需提交"
+            echo "🟢 无改动，无需提交"
           fi
 
   clean_runs:
