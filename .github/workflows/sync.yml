@@ -1,5 +1,6 @@
 name: 自动同步上游
-run-name: 自动同步上游（${{ github.event_name }} - ${{ github.run_number }})
+run-name: 自动同步上游（${{ github.event_name }} - ${{ github.run_number }}）
+
 on:
   schedule:
     - cron: '0 4 * * *'  # UTC 4点，即北京时间12点
@@ -19,25 +20,25 @@ jobs:
           - branch: '18.06'
             repos: |
               {
-                "luci-app-argon-config": "https://github.com/jerrykuku/luci-app-argon-config  18.06",
-                "luci-theme-argon": "https://github.com/jerrykuku/luci-theme-argon  18.06",
-                "luci-theme-design": "https://github.com/0x676e67/luci-theme-design ",
-                "luci-app-design-config": "https://github.com/0x676e67/luci-app-design-config ",
-                "luci-theme-neobird": "https://github.com/thinktip/luci-theme-neobird ",
-                "luci-app-lucky": "https://github.com/gdy666/luci-app-lucky ",
-                "luci-app-filebrowser": "https://github.com/wangqn/luci-app-filebrowser ",
-                "luci-app-poweroff": "https://github.com/esirplayground/luci-app-poweroff ",
-                "luci-app-store": "https://github.com/db-one/dbone-packages  18.06",
-                "luci-app-openclash": "https://github.com/vernesong/OpenClash ",
-                "luci-app-oaf": "https://github.com/db-one/dbone-packages  18.06",
-                "luci-app-shutdown": "https://github.com/db-one/dbone-packages  18.06",
-                "luci-lib-xterm": "https://github.com/db-one/dbone-packages  18.06",
-                "taskd": "https://github.com/db-one/dbone-packages  18.06",
-                "gowebdav": "https://github.com/linkease/istore-packages ",
-                "luci-app-gowebdav": "https://github.com/linkease/istore-packages ",
-                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci ",
-                "unishare": "https://github.com/linkease/nas-packages ",
-                "webdav2": "https://github.com/linkease/nas-packages "
+                "luci-app-argon-config": "https://github.com/jerrykuku/luci-app-argon-config 18.06",
+                "luci-theme-argon": "https://github.com/jerrykuku/luci-theme-argon 18.06",
+                "luci-theme-design": "https://github.com/0x676e67/luci-theme-design",
+                "luci-app-design-config": "https://github.com/0x676e67/luci-app-design-config",
+                "luci-theme-neobird": "https://github.com/thinktip/luci-theme-neobird",
+                "luci-app-lucky": "https://github.com/gdy666/luci-app-lucky",
+                "luci-app-filebrowser": "https://github.com/wangqn/luci-app-filebrowser",
+                "luci-app-poweroff": "https://github.com/esirplayground/luci-app-poweroff",
+                "luci-app-store": "https://github.com/db-one/dbone-packages 18.06",
+                "luci-app-openclash": "https://github.com/vernesong/OpenClash",
+                "luci-app-oaf": "https://github.com/db-one/dbone-packages 18.06",
+                "luci-app-shutdown": "https://github.com/db-one/dbone-packages 18.06",
+                "luci-lib-xterm": "https://github.com/db-one/dbone-packages 18.06",
+                "taskd": "https://github.com/db-one/dbone-packages 18.06",
+                "gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci",
+                "unishare": "https://github.com/linkease/nas-packages",
+                "webdav2": "https://github.com/linkease/nas-packages"
               }
             subdirs: |
               {
@@ -50,30 +51,30 @@ jobs:
                 "luci-app-oaf": "luci-app-oaf",
                 "gowebdav": "gowebdav",
                 "luci-app-gowebdav": "luci-app-gowebdav",
-                "luci-app-unishare": "luci-app-unishare",
+                "luci-app-unishare": "luci/luci-app-unishare",
                 "unishare": "network/services/unishare",
                 "webdav2": "network/services/webdav2"
               }
           - branch: '24.10'
             repos: |
               {
-                "luci-app-argon-config": "https://github.com/jerrykuku/luci-app-argon-config ",
-                "luci-theme-argon": "https://github.com/jerrykuku/luci-theme-argon ",
-                "luci-theme-neobird": "https://github.com/thinktip/luci-theme-neobird ",
-                "luci-app-lucky": "https://github.com/gdy666/luci-app-lucky ",
-                "luci-app-filebrowser": "https://github.com/Lienol/openwrt-package ",
-                "luci-app-poweroff": "https://github.com/esirplayground/luci-app-poweroff ",
-                "luci-app-store": "https://github.com/db-one/dbone-packages  23.05",
-                "luci-app-openclash": "https://github.com/vernesong/OpenClash ",
-                "luci-app-oaf": "https://github.com/db-one/dbone-packages  23.05",
-                "luci-lib-taskd": "https://github.com/db-one/dbone-packages  23.05",
-                "luci-lib-xterm": "https://github.com/db-one/dbone-packages  23.05",
-                "taskd": "https://github.com/db-one/dbone-packages  23.05",
-                "gowebdav": "https://github.com/linkease/istore-packages ",
-                "luci-app-gowebdav": "https://github.com/linkease/istore-packages ",
-                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci ",
-                "unishare": "network/services/unishare",
-                "webdav2": "network/services/webdav2"
+                "luci-app-argon-config": "https://github.com/jerrykuku/luci-app-argon-config",
+                "luci-theme-argon": "https://github.com/jerrykuku/luci-theme-argon",
+                "luci-theme-neobird": "https://github.com/thinktip/luci-theme-neobird",
+                "luci-app-lucky": "https://github.com/gdy666/luci-app-lucky",
+                "luci-app-filebrowser": "https://github.com/Lienol/openwrt-package",
+                "luci-app-poweroff": "https://github.com/esirplayground/luci-app-poweroff",
+                "luci-app-store": "https://github.com/db-one/dbone-packages 23.05",
+                "luci-app-openclash": "https://github.com/vernesong/OpenClash",
+                "luci-app-oaf": "https://github.com/db-one/dbone-packages 23.05",
+                "luci-lib-taskd": "https://github.com/db-one/dbone-packages 23.05",
+                "luci-lib-xterm": "https://github.com/db-one/dbone-packages 23.05",
+                "taskd": "https://github.com/db-one/dbone-packages 23.05",
+                "gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-gowebdav": "https://github.com/linkease/istore-packages",
+                "luci-app-unishare": "https://github.com/linkease/nas-packages-luci",
+                "unishare": "https://github.com/linkease/nas-packages",
+                "webdav2": "https://github.com/linkease/nas-packages"
               }
             subdirs: |
               {
@@ -120,24 +121,21 @@ jobs:
         run: |
           SYNC_RECORD=".sync-record-${{ matrix.branch }}"
           if [ -f "$SYNC_RECORD" ]; then
-            if [ ! -s "$SYNC_RECORD" ]; then
-              echo "⚠️ 同步记录文件为空，将强制更新所有仓库"
-              > "$SYNC_RECORD"
-            else
-              echo "✅ 读取已有同步记录: $SYNC_RECORD"
-            fi
+            echo "读取已有同步记录: $SYNC_RECORD"
           else
-            echo "🆕 创建新同步记录文件: $SYNC_RECORD"
+            echo "未找到同步记录文件，创建新文件: $SYNC_RECORD"
             touch "$SYNC_RECORD"
           fi
 
       - name: 增量同步仓库
         run: |
+          # 从矩阵配置中获取JSON数据
           REPOS_JSON='${{ matrix.repos }}'
           SUBDIRS_JSON='${{ matrix.subdirs }}'
           SYNC_RECORD=".sync-record-${{ matrix.branch }}"
           TEMP_RECORD="${SYNC_RECORD}.tmp"
 
+          # 解析JSON到关联数组
           declare -A repos
           while IFS="=" read -r key value; do
             repos["$key"]="$value"
@@ -148,27 +146,45 @@ jobs:
             subdirs["$key"]="$value"
           done < <(jq -r 'to_entries | .[] | "\(.key)=\(.value)"' <<< "$SUBDIRS_JSON")
 
+          # 修复：安全读取同步记录
           declare -A last_commits
           if [ -f "$SYNC_RECORD" ]; then
-            while read -r repo commit; do
-              last_commits["$repo"]=$commit
+            while IFS= read -r line; do
+              # 跳过空行和无效行
+              if [[ -z "$line" || "$line" != *" "* ]]; then
+                continue
+              fi
+              repo="${line%% *}"
+              commit="${line#* }"
+              if [[ -n "$repo" && -n "$commit" ]]; then
+                last_commits["$repo"]="$commit"
+                echo "从记录加载: $repo = $commit"
+              fi
             done < "$SYNC_RECORD"
           fi
 
+          # 创建临时目录
           mkdir -p sync_temp
           cd sync_temp
+
+          # 初始化变化检测标志
           changes_detected=false
+
+          # 清空临时同步记录文件
           > "../$TEMP_RECORD"
 
+          # 遍历所有仓库
           for name in "${!repos[@]}"; do
             (
-              echo -e "\n🔁 开始处理仓库: \033[36m$name\033[0m"
+              echo "🔁 开始处理仓库: $name"
+
               entry="${repos[$name]}"
               url=$(echo "$entry" | awk '{print $1}')
               branch=$(echo "$entry" | awk '{print $2}')
               echo "   URL: $url"
               echo "   分支: ${branch:-默认分支}"
 
+              # 获取远程最新提交
               if [ -n "$branch" ]; then
                 remote_commit=$(git ls-remote "$url" "refs/heads/$branch" | awk '{print $1}')
               else
@@ -176,22 +192,38 @@ jobs:
               fi
 
               if [ -z "$remote_commit" ]; then
-                echo -e "\033[31m❌ 无法获取远程仓库最新提交，跳过 $name\033[0m"
+                echo "❌ 无法获取远程仓库最新提交，跳过 $name"
+                # 保留原有记录（如果存在）
+                if [ -n "${last_commits[$name]:-}" ]; then
+                  echo "$name ${last_commits[$name]}" >> "../$TEMP_RECORD"
+                fi
                 exit 0
               fi
 
               local_commit="${last_commits[$name]:-}"
-              if [ "$remote_commit" == "$local_commit" ]; then
-                echo -e "\033[32m✅ $name 无变化，跳过更新\033[0m"
-              else
-                echo -e "\033[33m🔄 $name 有更新（旧: ${local_commit:0:7} → 新: ${remote_commit:0:7}）\033[0m"
+              
+              # 关键优化：当同步记录文件为空时强制拉取
+              if [ ! -s "../$SYNC_RECORD" ] || [ -z "$local_commit" ]; then
+                echo "🔄 首次同步或记录为空，强制更新 $name"
                 changes_detected=true
+                should_update=true
+              elif [ "$remote_commit" == "$local_commit" ]; then
+                echo "✅ $name 无变化，跳过更新"
+                should_update=false
+              else
+                echo "🔄 $name 有更新（旧: ${local_commit:0:7} → 新: ${remote_commit:0:7}）"
+                changes_detected=true
+                should_update=true
+              fi
 
+              if ${should_update:-true}; then
+                # 清理旧目录
                 if [ -d "../$name" ]; then
                   echo "   清理旧目录: ../$name"
                   rm -rf "../$name"
                 fi
 
+                # 克隆仓库（带重试）
                 clone_dir="$name-temp"
                 max_retries=3
                 retry_count=0
@@ -201,20 +233,28 @@ jobs:
                   else
                     git clone -q --depth=1 "$url" "$clone_dir"
                   fi
+
                   if [ $? -eq 0 ]; then
                     break
                   fi
                   retry_count=$((retry_count+1))
-                  echo -e "\033[33m⚠️ 克隆失败，重试 $retry_count/$max_retries...\033[0m"
+                  echo "⚠️ 克隆失败，重试 $retry_count/$max_retries..."
                   sleep 2
                   rm -rf "$clone_dir"
                 done
 
                 if [ $retry_count -eq $max_retries ]; then
-                  echo -e "\033[31m❌ 克隆 $name 失败，跳过\033[0m"
+                  echo "❌ 克隆 $name 失败，跳过"
+                  # 保留原有记录（如果存在）
+                  if [ -n "$local_commit" ]; then
+                    echo "$name $local_commit" >> "../$TEMP_RECORD"
+                  else
+                    echo "$name $remote_commit" >> "../$TEMP_RECORD"
+                  fi
                   exit 0
                 fi
 
+                # 提取子目录
                 if [[ -n "${subdirs[$name]}" ]]; then
                   subdir="${subdirs[$name]}"
                   echo "   提取子目录: $subdir"
@@ -223,22 +263,29 @@ jobs:
                     rm -rf "$clone_dir"
                     mv "${clone_dir}-content" "$clone_dir"
                   else
-                    echo -e "\033[33m⚠️ 子目录 $subdir 不存在，跳过提取\033[0m"
+                    echo "⚠️ 子目录 $subdir 不存在，跳过提取"
                   fi
                 fi
 
+                # 移除 .git 并移动到目标
                 rm -rf "$clone_dir/.git"
                 mv "$clone_dir" "../$name"
-                echo -e "\033[32m✅ $name 更新完成\033[0m"
+
+                echo "✅ $name 更新完成"
               fi
+
+              # ✅ 无论是否更新都记录最新 commit
               echo "$name $remote_commit" >> "../$TEMP_RECORD"
-            ) || echo -e "\033[31m⚠️ $name 处理失败，继续下一个仓库\033[0m"
+            ) || echo "⚠️ $name 处理失败，继续下一个仓库"
           done
 
           cd ..
+
+          # ✅ 保存新同步记录
           mv "$TEMP_RECORD" "$SYNC_RECORD"
-          echo -e "\033[32m📦 已更新同步记录内容:\033[0m"
+          echo "📦 已更新同步记录内容:"
           cat "$SYNC_RECORD"
+
       - name: 检测改动并提交
         run: |
           if [ -n "$(git status --porcelain)" ]; then
@@ -247,9 +294,9 @@ jobs:
             git commit -m "🎈同步时间 $time🚀"
             git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
             git push origin ${{ matrix.branch }}
-            echo -e "\033[32m✅ 已提交并推送更改\033[0m"
+            echo "✅ 已提交并推送更改"
           else
-            echo -e "\033[32m🟢 无变化，无需提交\033[0m"
+            echo "🟢 无变化，无需提交"
           fi
 
   clean_runs:
