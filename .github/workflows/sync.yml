@@ -66,6 +66,7 @@ jobs:
                 "luci-app-poweroff": "https://github.com/esirplayground/luci-app-poweroff",
                 "luci-app-store": "https://github.com/db-one/dbone-packages 23.05",
                 "luci-app-openclash": "https://github.com/vernesong/OpenClash",
+                "luci-app-oaf": "https://github.com/db-one/dbone-packages 23.05",
                 "luci-lib-taskd": "https://github.com/db-one/dbone-packages 23.05",
                 "luci-lib-xterm": "https://github.com/db-one/dbone-packages 23.05",
                 "taskd": "https://github.com/db-one/dbone-packages 23.05",
@@ -84,7 +85,8 @@ jobs:
                 "luci-lib-taskd": "luci-lib-taskd",
                 "luci-lib-xterm": "luci-lib-xterm",
                 "taskd": "taskd",
-                "gowebdav": "gowebdav",
+                "gowebdav": "gowebdav", 
+                "luci-app-oaf": "luci-app-oaf",
                 "luci-app-gowebdav": "luci-app-gowebdav",
                 "luci-app-unishare": "luci/luci-app-unishare",
                 "unishare": "network/services/unishare",
@@ -260,7 +262,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
             git add .
-            git commit -m "chore(${{ matrix.branch }}): 自动同步上游 [$time]"
+            git commit -m "🎈同步时间 $time🚀"
             git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
             git push origin ${{ matrix.branch }}
             echo "✅ 已提交并推送更改"
