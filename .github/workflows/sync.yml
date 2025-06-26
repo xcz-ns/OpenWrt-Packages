@@ -289,7 +289,7 @@ jobs:
       - name: 检测改动并提交
         run: |
           if [ -n "$(git status --porcelain)" ]; then
-            time=$(date '+%Y年%m月%d日 %H时%M分%S秒')
+            time=$(date '+%Y-%m-%d %H:%M:%S')
             git add .
             git commit -m "🎈同步时间 $time🚀"
             git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
