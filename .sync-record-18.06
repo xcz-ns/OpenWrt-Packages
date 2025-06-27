@@ -6,6 +6,7 @@ luci-app-poweroff 425b7a073cf9794a922af57c7008890e0111b79a
 taskd 5d2a9f2c755987b30af82c6d47e2f8f54acd9adb
 luci-app-gowebdav 7cb7f9f95ab4e4a7842230c4597c68f688861422
 luci-theme-design 5cea733806ccaf17fd63790d171bb2b65f29f8bd
+luci-lib-taskd 5d2a9f2c755987b30af82c6d47e2f8f54acd9adb
 luci-app-lucky 2b1fd7238361f9a06015684f546cbf1cb45f43c4
 luci-app-openclash 6608a4cda8dc90089651afced0c60553c1a6beab
 luci-app-store 5d2a9f2c755987b30af82c6d47e2f8f54acd9adb
