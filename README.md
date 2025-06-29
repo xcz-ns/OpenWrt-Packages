@@ -1,68 +1,101 @@
 # 上游仓库同步自动化（含子目录提取）
 
-本项目通过 GitHub Actions 自动同步多个上游开源仓库中的插件或主题，支持按需提取子目录并更新至本仓库根目录。适用于构建 OpenWrt 插件集或镜像插件管理。
+本项目使用 **GitHub Actions** 自动同步多个上游 OpenWrt 插件仓库，支持跨多个分支（如 `18.06`、`24.10`）自动提取子目录并更新至当前仓库，便于定制 OpenWrt 插件集成。
+
+------
 
 ## ✨ 功能特点
 
-- ✅ 自动同步指定的 Git 仓库内容
-- ✅ 支持只提取仓库中的某个子目录
-- ✅ 每日定时更新（北京时间中午12点）
-- ✅ 支持手动触发
-- ✅ 自动记录上游提交，避免重复拉取
-- ✅ 自动推送更新并清理旧的 workflow 运行记录
+✅ **支持多分支同步**（通过矩阵策略一次同步多个目标分支）
+
+✅ **自动提取仓库中的子目录**（只保留需要的部分）
+
+✅ **每日定时同步**（北京时间中午 12:00 自动运行）
+
+✅ **支持手动触发或代码变更触发**
+
+✅ **自动记录上游 commit，避免重复拉取**
+
+✅ **增量更新，仅同步发生变化的仓库**
+
+✅ **同步失败自动重试**
+
+✅ **自动提交改动并推送**
+
+✅ **自动清理旧的工作流运行记录**
+
+------
 
 ## 🧩 使用方式
 
-### 配置同步仓库
+### 配置同步源
 
-在 `.github/workflows/sync.yml` 中配置仓库源：
+在 `.github/workflows/sync.yml` 中使用 matrix 配置各分支同步内容。
 
-```bash
-declare -A repos=(
-  ["插件名"]="仓库链接 分支（可省略）"
-)
-````
+每个分支配置如下两部分：
 
-例如：
+#### 1. `repos`：需同步的仓库及分支（可省略分支）
 
-```bash
-["luci-app-lucky"]="https://github.com/gdy666/luci-app-lucky main"
-["luci-theme-argon"]="https://github.com/jerrykuku/luci-theme-argon 18.06"
+格式为 JSON 格式的键值对，例：
+
+```json
+{
+  "插件名": "仓库链接 分支（可选）"
+}
 ```
 
-### 配置需要提取子目录的仓库
+示例：
 
-如上游仓库是多项目结构，仅需其中一个子目录：
-
-```bash
-declare -A subdirs=(
-  ["插件名"]="子目录路径"
-)
+```json
+{
+  "luci-theme-argon": "https://github.com/jerrykuku/luci-theme-argon 18.06",
+  "luci-app-lucky": "https://github.com/gdy666/luci-app-lucky"
+}
 ```
 
-例如：
+#### 2. `subdirs`：仅提取的子目录路径（可选）
 
-```bash
-["luci-app-lucky"]="luci-app-lucky"
-["luci-app-store"]="luci-app-store"
+同样为 JSON 格式，指定仓库中要提取的子目录，提取后将替换为根目录下的同名目录。
+
+示例：
+
+```json
+{
+  "luci-app-lucky": "luci-app-lucky",
+  "luci-app-store": "luci-app-store",
+  "unishare": "network/services/unishare"
+}
 ```
 
-这些子目录将被提取为根目录下的内容，其余全部忽略。
+------
 
----
+## 📦 同步记录机制
 
-## 🕒 自动更新时间
+自动记录每个仓库最新的 commit，避免重复拉取。首次运行时会强制拉取所有仓库，后续仅增量同步发生变化的部分。
 
-通过 GitHub Actions 定时任务配置：
+------
 
-* **北京时间每日中午 12:00 自动运行**
-* **可随时通过手动触发运行一次**
+## ⏱ 自动更新时间
 
----
+通过 GitHub Actions 定时任务实现：
+
+🕛 **每日北京时间中午 12:00 自动执行**
+
+🖱 可在 Actions 页面中手动点击触发
+
+📝 触发 `.github/workflows/sync.yml` 文件的修改也可启动流程
+
+------
 
 ## 🚀 快速开始
 
 1. Fork 本仓库
-2. 编辑 `.github/workflows/sync.yml` 中的仓库列表和提取路径
-3. 推送触发或等待定时任务执行
-4. 所有同步内容将自动更新并提交
+2. 编辑 `.github/workflows/sync.yml` 中 `matrix` 配置的仓库列表和提取路径
+3. 推送修改，或等待自动定时触发
+4. 所有变更将自动提交至对应分支
+
+------
+
+## 🧹 自动清理历史运行记录
+
+每次同步完成后，会自动删除旧的 workflow 执行记录，仅保留最新记录，保持 Actions 页面整洁。
