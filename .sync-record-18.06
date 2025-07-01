@@ -17,6 +17,7 @@ luci-theme-argon d6dd165802938d455e4967aefd8a95e47773b5d7
 luci-theme-neobird 945370726889618d711e884e24f824cb11d77cd6
 luci-app-shutdown 9fe8f3d6ba180f36892dcac8167b67db7a49822b
 luci-app-filebrowser be0e8e4d29f13409726691838f8c5720e46d21a7
+luci-app-wizard 9c8d36cd7e204f6ca2d5248b2f8e0d267ee6956f
 luci-app-unishare 0a69cd9a981f88ecf061d1a4764d1cacb15f1d3c
 luci-app-oaf 9fe8f3d6ba180f36892dcac8167b67db7a49822b
 luci-app-wolplus a1d75997972c3cbc7ff149c5adbcac4db043f1e7
