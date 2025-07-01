@@ -42,7 +42,7 @@ jobs:
                 "webdav2": "https://github.com/linkease/nas-packages",
                 "luci-app-tailscale": "https://github.com/asvow/luci-app-tailscale",
                 "luci-app-wolplus": "https://github.com/animegasan/luci-app-wolplus",
-                "luci-app-wizard": "https://github.com/sirpdboy/luci-app-wizard"
+                "luci-app-wizard": "https://github.com/sirpdboy/luci-app-netwizard"
               }
             subdirs: |
               {
@@ -58,6 +58,7 @@ jobs:
                 "luci-app-gowebdav": "luci-app-gowebdav",
                 "luci-app-unishare": "luci/luci-app-unishare",
                 "unishare": "network/services/unishare",
+                "luci-app-netwizard": "luci-app-netwizard",
                 "webdav2": "network/services/webdav2"
               }
           - branch: '24.10'
@@ -98,6 +99,7 @@ jobs:
                 "luci-app-gowebdav": "luci-app-gowebdav",
                 "luci-app-unishare": "luci/luci-app-unishare",
                 "unishare": "network/services/unishare",
+                "luci-app-netwizard": "luci-app-netwizard",
                 "webdav2": "network/services/webdav2"
               }
     env:
