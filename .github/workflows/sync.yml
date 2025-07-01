@@ -41,7 +41,8 @@ jobs:
                 "unishare": "https://github.com/linkease/nas-packages",
                 "webdav2": "https://github.com/linkease/nas-packages",
                 "luci-app-tailscale": "https://github.com/asvow/luci-app-tailscale",
-                "luci-app-wolplus": "https://github.com/animegasan/luci-app-wolplus"
+                "luci-app-wolplus": "https://github.com/animegasan/luci-app-wolplus",
+                "luci-app-wizard": "https://github.com/sirpdboy/luci-app-wizard"
               }
             subdirs: |
               {
@@ -80,7 +81,8 @@ jobs:
                 "unishare": "https://github.com/linkease/nas-packages",
                 "webdav2": "https://github.com/linkease/nas-packages",
                 "luci-app-tailscale": "https://github.com/asvow/luci-app-tailscale",
-                "luci-app-wolplus": "https://github.com/animegasan/luci-app-wolplus"
+                "luci-app-wolplus": "https://github.com/animegasan/luci-app-wolplus",
+                "luci-app-wizard": "https://github.com/sirpdboy/luci-app-wizard"
               }
             subdirs: |
               {
